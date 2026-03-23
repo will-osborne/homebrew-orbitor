@@ -1,27 +1,27 @@
 class Orbitor < Formula
   desc "AI coding assistant bridge — TUI + mobile interface for Claude Code and GitHub Copilot"
   homepage "https://github.com/will-osborne/orbitor"
-  version "0.1.31"
+  version "0.1.32"
 
   on_macos do
     on_arm do
       url "https://github.com/will-osborne/orbitor/releases/download/v#{version}/orbitor-darwin-arm64"
-      sha256 "06611c9d8a1e0e3c25313ed782277087ac0bbd3e13cf83339764d8860f39c938"
+      sha256 "db8caf1dae9653d75dc36dd1ca4bfe3fa898b1a1eb32f21a23f0d31c0d3658fe"
     end
     on_intel do
       url "https://github.com/will-osborne/orbitor/releases/download/v#{version}/orbitor-darwin-amd64"
-      sha256 "56cd1c98c967e2f3850d4e4c154813934d578dd94ede9198e6558ea7b3c57696"
+      sha256 "dc39675d69e339a9eaa2d5174921291d36ead4cfc1c6e195ff65942fe66a6b0c"
     end
   end
 
   on_linux do
     on_arm do
       url "https://github.com/will-osborne/orbitor/releases/download/v#{version}/orbitor-linux-arm64"
-      sha256 "f0beab74cf63b8daf0f7870fdf92e123f2bf5a809b5f67b6df6a7b83d4df5a5e"
+      sha256 "e021d7d9f018d92c7d2fca46f2abfadfc4e4a271634a693aed1830543f65d530"
     end
     on_intel do
       url "https://github.com/will-osborne/orbitor/releases/download/v#{version}/orbitor-linux-amd64"
-      sha256 "5173657618f07585e6e3831a93206640afa204e16b71895fe711de36835eb272"
+      sha256 "0a088136c2b60a69b80e2599897e20fb81c6776e9648d9f9eeaf856d3240fdea"
     end
   end
 
