@@ -6,22 +6,22 @@ class Orbitor < Formula
   on_macos do
     on_arm do
       url "https://github.com/will-osborne/orbitor/releases/download/v#{version}/orbitor-darwin-arm64"
-      sha256 "153a5f85c3858e84d19023e2b2b8e5773a1c4a98239b012abf9771933572dd06"
+      sha256 "b39e99877b1db2623fb602a3aebb67a2b89c9af9d818767d6770e1fe5290ece3"
     end
     on_intel do
       url "https://github.com/will-osborne/orbitor/releases/download/v#{version}/orbitor-darwin-amd64"
-      sha256 "2e5691bcf8d5d9e572aa47a4ec809fd76cbd533b6f2ce9400be5ebd1b4f9bb79"
+      sha256 "3060f10f1e4583cd5594849890c6c3573369e8d8668c7befcf34c8a0fc81825f"
     end
   end
 
   on_linux do
     on_arm do
       url "https://github.com/will-osborne/orbitor/releases/download/v#{version}/orbitor-linux-arm64"
-      sha256 "9b62919f778a77694ac4740f402db0c4f3d884e11b8c8074fb79dace825ab270"
+      sha256 "046f2c55eb21355522fd41cb22cfc15ed5e1421d3e6d42d93710167b3c7bf044"
     end
     on_intel do
       url "https://github.com/will-osborne/orbitor/releases/download/v#{version}/orbitor-linux-amd64"
-      sha256 "4bfbb9e381692afe4819457a2a61bf7b99927f9f8a4a1d1c501893e499ae3aaa"
+      sha256 "00d258525dcdda392dbec5236f8d37d9ece0601c73b99e2e057179327566c345"
     end
   end
 
