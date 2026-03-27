@@ -1,32 +1,32 @@
 class Orbitor < Formula
   desc "AI coding assistant bridge — TUI + mobile interface for Claude Code and GitHub Copilot"
   homepage "https://github.com/will-osborne/orbitor"
-  version "0.1.54"
+  version "0.1.55"
 
   on_macos do
     on_arm do
       url "https://github.com/will-osborne/orbitor/releases/download/v#{version}/orbitor-darwin-arm64"
-      sha256 "6ec50a66a68079e85b5c57f44489be2c71596ad0871f1fbb9840191eaf2f1021"
+      sha256 "fe997e8c73a28616f50e82e5fa50aae1380398aa0e2927862a661165c2510ee7"
     end
     on_intel do
       url "https://github.com/will-osborne/orbitor/releases/download/v#{version}/orbitor-darwin-amd64"
-      sha256 "0915c7e0fafd83228d6241618bc27e863a80e3669321060130a330fcf0a245eb"
+      sha256 "2de9404f9390536b7a53522887c2c8f3325a05e0ed2635f2b133676fd3c550e2"
     end
 
     resource "desktop" do
-      url "https://github.com/will-osborne/orbitor/releases/download/v0.1.54/orbitor-desktop-macos.zip"
-      sha256 "3cb0787b58aa1de93905c7f3c238ac3b518b49891782c5cfd8076a35b7c34345"
+      url "https://github.com/will-osborne/orbitor/releases/download/v0.1.55/orbitor-desktop-macos.zip"
+      sha256 "cc7f0a09d8b29d01dda570d333f5f46ed2c1f8c25889fed0b8f09ec28b053d2e"
     end
   end
 
   on_linux do
     on_arm do
       url "https://github.com/will-osborne/orbitor/releases/download/v#{version}/orbitor-linux-arm64"
-      sha256 "c02f9042f2d005afcb5025b1ffd3e4b8ac6db0201e391b9751f46ee086efd429"
+      sha256 "8d2d7ce1dea48560d91dcee7299825b221e6a60fb85d9ba8c0a53ecc32c57672"
     end
     on_intel do
       url "https://github.com/will-osborne/orbitor/releases/download/v#{version}/orbitor-linux-amd64"
-      sha256 "d41fe0122ef4d2266077281e24bbe71e2c0fc3d89f99c989a6508882f6f49edf"
+      sha256 "4e5216859137996058fe30bbe259b3da2010766476a97e0e300d52bb7dfdce37"
     end
   end
 
@@ -47,12 +47,13 @@ class Orbitor < Formula
     quiet_system "brew", "services", "restart", "orbitor"
 
     if OS.mac?
-      # Install the desktop app into ~/Applications
+      # Install the desktop app into ~/Applications using ditto, which
+      # overwrites in-place without requiring delete (avoids EPERM on
+      # protected app bundles that have been run by the user).
       user_apps = Pathname.new(ENV["HOME"]) / "Applications"
       user_apps.mkpath
       app_dest = user_apps / "Orbitor.app"
-      system "rm", "-rf", app_dest.to_s
-      system "cp", "-R", (opt_prefix / "Orbitor.app").to_s, app_dest.to_s
+      system "ditto", (opt_prefix / "Orbitor.app").to_s, app_dest.to_s
     end
   end
 
