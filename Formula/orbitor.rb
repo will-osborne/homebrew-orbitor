@@ -1,32 +1,43 @@
 class Orbitor < Formula
   desc "AI coding assistant bridge — TUI + mobile interface for Claude Code and GitHub Copilot"
   homepage "https://github.com/will-osborne/orbitor"
-  version "0.1.47"
+  version "0.1.48"
 
   on_macos do
     on_arm do
       url "https://github.com/will-osborne/orbitor/releases/download/v#{version}/orbitor-darwin-arm64"
-      sha256 "25a6d71a0c35093b137874b3403028dbee258e0f5528c376f1c8eb1df9c770ed"
+      sha256 "8e679d04d26377d0a2c4b683df07e71db2f73b4fbb6be551e14feae5a13c8a75"
     end
     on_intel do
       url "https://github.com/will-osborne/orbitor/releases/download/v#{version}/orbitor-darwin-amd64"
-      sha256 "269ced50dfcbc4082ed893f45dfd17237c56a323838f7d319458853f04fb9332"
+      sha256 "fba34ed56d9482b0202446bf4b736004e73d753df3f4482e4261a92aeb773d74"
+    end
+
+    resource "desktop" do
+      url "https://github.com/will-osborne/orbitor/releases/download/v#{version}/orbitor-desktop-macos.zip"
+      sha256 "823b876918e493564a56b00ec620187995c8d87958dd9da343aee69b11a79f2c"
     end
   end
 
   on_linux do
     on_arm do
       url "https://github.com/will-osborne/orbitor/releases/download/v#{version}/orbitor-linux-arm64"
-      sha256 "f1d25882833344c8458f96cdf09dd51ca306572b77a972d7c7f2ac5e77f66e4b"
+      sha256 "10dda93fffdcf60f6db67e92d653a2f4e4eb66efaa621d58b92ddcc3e69ed6d4"
     end
     on_intel do
       url "https://github.com/will-osborne/orbitor/releases/download/v#{version}/orbitor-linux-amd64"
-      sha256 "e2619ad5af7bb625b8116f93ae4c51f865be88db0c5fc27e9521e8d7950ac6a9"
+      sha256 "4930615a04386278a91c864502fa0a11a3bca626a4f9dc906ec094c97955c11c"
     end
   end
 
   def install
     bin.install Dir["orbitor-*"].first => "orbitor"
+
+    if OS.mac?
+      resource("desktop").stage do
+        prefix.install "Orbitor.app"
+      end
+    end
   end
 
   def post_install
@@ -34,6 +45,15 @@ class Orbitor < Formula
     # Restart the background service after upgrade so the new binary is used.
     # quiet_system avoids errors when the service isn't running yet.
     quiet_system "brew", "services", "restart", "orbitor"
+
+    if OS.mac?
+      # Symlink the desktop app into ~/Applications
+      user_apps = Pathname.new(ENV["HOME"]) / "Applications"
+      user_apps.mkpath
+      app_link = user_apps / "Orbitor.app"
+      app_link.unlink if app_link.exist? || app_link.symlink?
+      app_link.make_symlink(prefix / "Orbitor.app")
+    end
   end
 
   service do
@@ -50,12 +70,12 @@ class Orbitor < Formula
         orbitor setup
 
       To start the server as a background service:
-        orbitor service install
-      or via Homebrew services:
         brew services start orbitor
 
       Open the TUI:
         orbitor
+
+      The macOS desktop app has been symlinked to ~/Applications/Orbitor.app.
     EOS
   end
 
