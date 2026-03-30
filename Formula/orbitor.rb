@@ -1,32 +1,32 @@
 class Orbitor < Formula
   desc "AI coding assistant bridge — TUI + mobile interface for Claude Code and GitHub Copilot"
   homepage "https://github.com/will-osborne/orbitor"
-  version "0.1.59"
+  version "0.1.60"
 
   on_macos do
     on_arm do
       url "https://github.com/will-osborne/orbitor/releases/download/v#{version}/orbitor-darwin-arm64"
-      sha256 "9268c35292d4e36235835570139a55aef7e6e9ce6398e3dda3867778cc697d07"
+      sha256 "964d639ffab0fdea31267cb08424884f5585f3a2d1e6112319ac7f753c2462ff"
     end
     on_intel do
       url "https://github.com/will-osborne/orbitor/releases/download/v#{version}/orbitor-darwin-amd64"
-      sha256 "5fce11dc7ad102cdc49937e694d57b7218fcc5428cfe24a4718e43dfa1dd220c"
+      sha256 "fc5ecdc6eea2acf03a723846742bc895739188b6100f297813f54721f074fe23"
     end
 
     resource "desktop" do
-      url "https://github.com/will-osborne/orbitor/releases/download/v0.1.59/orbitor-desktop-macos.zip"
-      sha256 "af1ca2e20393a76e855b94f064fdc95be50e4166db8a117236e521437d8b0364"
+      url "https://github.com/will-osborne/orbitor/releases/download/v0.1.60/orbitor-desktop-macos.zip"
+      sha256 "356a8c21b94838ba31db4e8c91577ec7dd28e99845b93d9cf7a94307a077bac8"
     end
   end
 
   on_linux do
     on_arm do
       url "https://github.com/will-osborne/orbitor/releases/download/v#{version}/orbitor-linux-arm64"
-      sha256 "ff1b1f7f5d8f082e476a3f31b2c3c81d86b42d438d113204d03c644d9c274b7d"
+      sha256 "0a32aa1dccce1810e1ad68f2d7354a675cc3cebc15f80f2fe41f228a0ce956b8"
     end
     on_intel do
       url "https://github.com/will-osborne/orbitor/releases/download/v#{version}/orbitor-linux-amd64"
-      sha256 "43f04b5fd466ab9d3c338e75e85972a7df71bfce02656d39035466c8c87a1e29"
+      sha256 "75b39a171e5b039f7dfc04a3c6c562e4dd053cca3f1ce1b46852b8c2ffcd5b37"
     end
   end
 
@@ -47,17 +47,23 @@ class Orbitor < Formula
     quiet_system "brew", "services", "restart", "orbitor"
 
     if OS.mac?
-      # Install the desktop app into ~/Applications.
-      # macOS protects app bundles that have been run by the user, so we
-      # must restore write permissions before removing the old bundle.
       user_apps = Pathname.new(ENV["HOME"]) / "Applications"
       user_apps.mkpath
       app_dest = user_apps / "Orbitor.app"
+      app_src = opt_prefix / "Orbitor.app"
       if app_dest.exist?
-        system "chmod", "-R", "u+w", app_dest.to_s
-        system "rm", "-rf", app_dest.to_s
+        # macOS 13+ sets com.apple.provenance on app bundles; remove it so
+        # the bundle can be deleted. On macOS 15+ (Darwin 24+), ~/Applications
+        # is TCC-protected and brew's subprocess may lack permission — fall back
+        # to a manual-install instruction in that case.
+        quiet_system "xattr", "-d", "com.apple.provenance", app_dest.to_s
+        quiet_system "rm", "-rf", app_dest.to_s
       end
-      system "ditto", (opt_prefix / "Orbitor.app").to_s, app_dest.to_s
+      unless quiet_system("ditto", app_src.to_s, app_dest.to_s)
+        opoo "Could not update #{app_dest.basename} automatically (macOS permission restriction)."
+        opoo "Run this from your terminal to update it:"
+        opoo "  ditto #{app_src} #{app_dest}"
+      end
     end
   end
 
