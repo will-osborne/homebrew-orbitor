@@ -1,32 +1,32 @@
 class Orbitor < Formula
   desc "AI coding assistant bridge — TUI + mobile interface for Claude Code and GitHub Copilot"
   homepage "https://github.com/will-osborne/orbitor"
-  version "0.1.61"
+  version "0.1.62"
 
   on_macos do
     on_arm do
       url "https://github.com/will-osborne/orbitor/releases/download/v#{version}/orbitor-darwin-arm64"
-      sha256 "44b6b1abfb71e2026b4d20a6ef29c05cf977894abb633df6fc1be2f762c59ae1"
+      sha256 "3a53d786cf2d2d92d6e496ee6ccd3e64c19999e54218a0f8fa43851caa6418e3"
     end
     on_intel do
       url "https://github.com/will-osborne/orbitor/releases/download/v#{version}/orbitor-darwin-amd64"
-      sha256 "0acea1462dfbd45a54eaf12b798792f4341ba02fdff2eada97cbe28ca68f5525"
+      sha256 "00c4bbe57872ebaed993c9b22858debb612e132d4660bddb89489560142718d5"
     end
 
     resource "desktop" do
-      url "https://github.com/will-osborne/orbitor/releases/download/v0.1.61/orbitor-desktop-macos.zip"
-      sha256 "8a38c397cfe53de28a232d2e98b242d0bdc5485062aa2b488c1ba051b8965cc4"
+      url "https://github.com/will-osborne/orbitor/releases/download/v0.1.62/orbitor-desktop-macos.zip"
+      sha256 "3a3d64e634b4a0cf843b2339fdbc4da730106500b99b523270e8f5ce5790f522"
     end
   end
 
   on_linux do
     on_arm do
       url "https://github.com/will-osborne/orbitor/releases/download/v#{version}/orbitor-linux-arm64"
-      sha256 "4edef829ef953c3de88a46e3f4da3c1cc1b2f246bc56b203bd06a3e4260ff678"
+      sha256 "fadd0a4e9f7e9cc927a39dbbb5217acc5330d1bd239cc22b9541cf931e24d5d5"
     end
     on_intel do
       url "https://github.com/will-osborne/orbitor/releases/download/v#{version}/orbitor-linux-amd64"
-      sha256 "67b3117b16be51ae6ad2ff726f30a9b127df8481db16472ffe042c5f177adf5a"
+      sha256 "bf068829e0cfd3cc1d47497f8b19b32ec4434a8f5110d3cd1369e9e337109d86"
     end
   end
 
@@ -42,6 +42,12 @@ class Orbitor < Formula
 
   def post_install
     (Pathname.new(ENV["HOME"]) / ".orbitor").mkpath
+    # Kill any existing orbitor server processes so the port is freed before
+    # the service restarts. Without this, the new server can't bind because
+    # the old process (possibly started outside brew services) still holds it.
+    quiet_system "pkill", "-f", "orbitor server"
+    quiet_system "pkill", "-f", "orbitor.*server"
+    sleep 2
     # Restart the background service after upgrade so the new binary is used.
     # quiet_system avoids errors when the service isn't running yet.
     quiet_system "brew", "services", "restart", "orbitor"
